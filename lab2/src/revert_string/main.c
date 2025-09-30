@@ -11,8 +11,9 @@ int main(int argc, char *argv[])
 		printf("Usage: %s string_to_revert\n", argv[0]);
 		return -1;
 	}
-
+// выделение памяти для копии строки
 	char *reverted_str = malloc(sizeof(char) * (strlen(argv[1]) + 1));
+	// Копируем исходную строку в выделенную память
 	strcpy(reverted_str, argv[1]);
 
 	RevertString(reverted_str);
