@@ -22,5 +22,3 @@ find_min_max.o: utils.h find_min_max.h
 
 clean:
 	rm -f utils.o find_min_max.o sequential_min_max parallel_min_max run_sequential min_max_*.txt
-
-.PHONY: all clean
