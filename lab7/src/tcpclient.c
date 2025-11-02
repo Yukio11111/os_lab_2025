@@ -11,13 +11,14 @@
 #define SADDR struct sockaddr
 #define SIZE sizeof(struct sockaddr_in)
 
-int main(int argc, char *argv[]) {
+int main(int argc, char **argv) {
   int fd;
   int nread;
   char buf[BUFSIZE];
   struct sockaddr_in servaddr;
-  if (argc < 3) {
-    printf("Too few arguments \n");
+
+  if (argc != 3) {
+    printf("Too few arguments. Usage: %s <IP> <PORT>\n", argv[0]);
     exit(1);
   }
 
@@ -28,25 +29,34 @@ int main(int argc, char *argv[]) {
 
   memset(&servaddr, 0, SIZE);
   servaddr.sin_family = AF_INET;
+  servaddr.sin_port = htons(atoi(argv[2]));
 
   if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0) {
     perror("bad address");
     exit(1);
   }
 
-  servaddr.sin_port = htons(atoi(argv[2]));
-
   if (connect(fd, (SADDR *)&servaddr, SIZE) < 0) {
     perror("connect");
     exit(1);
   }
 
-  write(1, "Input message to send\n", 22);
+  printf("Input message to send\n");
   while ((nread = read(0, buf, BUFSIZE)) > 0) {
     if (write(fd, buf, nread) < 0) {
       perror("write");
       exit(1);
     }
+    // Добавлено: Чтение ответа от сервера (эхо)
+    nread = read(fd, buf, BUFSIZE);
+    if (nread < 0) {
+      perror("read from server");
+      exit(1);
+    } else if (nread == 0) {
+      break;
+    }
+    printf("REPLY FROM SERVER: ");
+    write(1, buf, nread);
   }
 
   close(fd);

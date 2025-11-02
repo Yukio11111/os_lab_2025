@@ -15,7 +15,8 @@
 
 int main() {
   int sockfd, n;
-  char mesg[BUFSIZE], ipadr[16];
+  char mesg[BUFSIZE];
+  char ipadr[16];
   struct sockaddr_in servaddr;
   struct sockaddr_in cliaddr;
 
@@ -33,6 +34,7 @@ int main() {
     perror("bind problem");
     exit(1);
   }
+
   printf("SERVER starts...\n");
 
   while (1) {
@@ -53,4 +55,7 @@ int main() {
       exit(1);
     }
   }
+
+  close(sockfd);
+  return 0;
 }
